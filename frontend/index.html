@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecurePay - Fraud Risk System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🛡️</span> SecurePay Analytics
+            </div>
+            <nav>
+                <button id="toggle-model-details" class="nav-btn">Model Architecture</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Collapsible Model Details -->
+        <section id="model-details-panel" class="model-details-panel hidden">
+            <div class="panel-content">
+                <h2>Fraud Detection Model Insights</h2>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span class="label">Training Data</span>
+                        <span class="value">284,807 txns</span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">Fraud Rate</span>
+                        <span class="value">0.17%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">Precision</span>
+                        <span class="value">&gt; 95%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">Recall</span>
+                        <span class="value">~98%</span>
+                    </div>
+                </div>
+                <p class="disclaimer">Disclaimer: This system is for educational demonstration only.</p>
+            </div>
+        </section>
+
+        <!-- Main Tabs -->
+        <div class="mode-tabs">
+            <button class="mode-tab active" data-target="simulation-view">Payment Simulation</button>
+            <button class="mode-tab" data-target="analytics-view">Analytics Dashboard</button>
+            <button class="mode-tab" data-target="debugger-view">ML Feature Debugger</button>
+        </div>
+
+        <!-- VIEW A: Payment Simulation -->
+        <section id="simulation-view" class="view-section active">
+            <div class="checkout-layout">
+                <div class="card payment-card">
+                    <h2>Real-Time Fraud Risk Scoring</h2>
+                    <p class="subtitle">Enter payment details to simulate transaction risk scoring.</p>
+
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label for="card_number">Card Number</label>
+                            <div class="input-wrapper card-icon">
+                                <input type="text" id="card_number" name="card_number" placeholder="0000 0000 0000 0000"
+                                    maxlength="19" required>
+                                <span class="icon">💳</span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiry">Expiry Date</label>
+                                <input type="text" id="expiry" name="expiry_date" placeholder="MM/YY" maxlength="5"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="password" id="cvv" name="cvv" placeholder="123" maxlength="4" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="amount">Transaction Amount ($)</label>
+                            <input type="number" id="amount" name="amount" step="0.01" placeholder="0.00" required>
+                        </div>
+
+                        <button type="submit" class="pay-btn" id="pay-btn">
+                            <span class="btn-text">Score Transaction</span>
+                            <span class="loader hidden"></span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card status-card">
+                    <div id="initial-state" class="center-content">
+                        <div class="illustration">🔒</div>
+                        <h3>Secure Risk Scoring</h3>
+                        <p>Real-time analysis of transaction patterns.</p>
+                    </div>
+
+                    <div id="result-state" class="result-content hidden">
+                        <div id="status-icon" class="status-icon">✅</div>
+                        <h2 id="status-title">Payment Approved</h2>
+                        <p id="status-message">Transaction verified successfully.</p>
+
+                        <div class="fraud-meter">
+                            <div class="meter-label">
+                                <span>Fraud Probability</span>
+                                <span id="prob-display">0.0%</span>
+                            </div>
+                            <div class="meter-bar">
+                                <div id="meter-fill" class="meter-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <span>Model Confidence</span>
+                                <span id="confidence-display">High</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>Processing Time</span>
+                                <span id="time-display">12ms</span>
+                            </div>
+                        </div>
+
+                        <button id="reset-btn" class="reset-link">Score Another Transaction</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW B: Analytics Dashboard -->
+        <section id="analytics-view" class="view-section">
+            <div class="dashboard-grid">
+                <!-- Summary Cards -->
+                <div class="metric-card">
+                    <h3>Model Accuracy</h3>
+                    <div class="metric-value" id="dash-accuracy">--</div>
+                    <div class="metric-sub">Random Forest Classifier</div>
+                </div>
+                <div class="metric-card">
+                    <h3>AUC Score</h3>
+                    <div class="metric-value" id="dash-auc">--</div>
+                    <div class="metric-sub">Area Under Curve</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Recall (Fraud)</h3>
+                    <div class="metric-value" id="dash-recall">--</div>
+                    <div class="metric-sub">Ability to catch fraud</div>
+                </div>
+
+                <!-- Charts Row 1 -->
+                <div class="chart-card">
+                    <h3>ROC Curve</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="rocChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Feature Importance (Top 10)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="featureChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Threshold Tuning -->
+                <div class="card full-width-card" style="grid-column: 1 / -1;">
+                    <h3>Threshold Tuning & Business Impact</h3>
+                    <p class="subtitle">Adjust probability threshold to balance Fraud Capture vs. User Friction.</p>
+
+                    <div class="slider-container">
+                        <label for="threshold-slider">Fraud Threshold: <strong id="threshold-val">0.5</strong></label>
+                        <input type="range" id="threshold-slider" min="01" max="09" value="05" step="01"
+                            style="width: 100%;">
+                        <div class="slider-labels">
+                            <span>More False Alarms (Safe)</span>
+                            <span>More Missed Fraud (Risky)</span>
+                        </div>
+                    </div>
+
+                    <div class="impact-grid">
+                        <div class="impact-item">
+                            <span class="label">Fraud Caught (Recall)</span>
+                            <span class="value" id="impact-recall">--</span>
+                        </div>
+                        <div class="impact-item">
+                            <span class="label">False Alarms (FP)</span>
+                            <span class="value" id="impact-fp">--</span>
+                            <span class="sub">Customer Friction</span>
+                        </div>
+                        <div class="impact-item">
+                            <span class="label">Missed Fraud (FN)</span>
+                            <span class="value" id="impact-fn">--</span>
+                            <span class="sub">Revenue Leakage</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confusion Matrix Visual -->
+                <div class="chart-card full-width-card" style="grid-column: 1 / -1;">
+                    <h3>Confusion Matrix (Test Set)</h3>
+                    <div class="cm-grid">
+                        <div class="cm-header"></div>
+                        <div class="cm-header">Predicted Legitimate</div>
+                        <div class="cm-header">Predicted Fraud</div>
+
+                        <div class="cm-header-side">Actual Legitimate</div>
+                        <div class="cm-cell tn" id="cm-tn">
+                            <span class="value">--</span>
+                            <span class="label">True Negatives</span>
+                        </div>
+                        <div class="cm-cell fp" id="cm-fp">
+                            <span class="value">--</span>
+                            <span class="label">False Positives</span>
+                        </div>
+
+                        <div class="cm-header-side">Actual Fraud</div>
+                        <div class="cm-cell fn" id="cm-fn">
+                            <span class="value">--</span>
+                            <span class="label">False Negatives</span>
+                        </div>
+                        <div class="cm-cell tp" id="cm-tp">
+                            <span class="value">--</span>
+                            <span class="label">True Positives</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- VIEW C: ML Debugger -->
+        <section id="debugger-view" class="view-section">
+            <div class="card full-width-card">
+                <h2>ML Model Debugger</h2>
+                <div class="debugger-actions">
+                    <button id="load-random-btn" class="secondary-btn">Test Using Random Dataset Transaction</button>
+                    <label for="csv-upload" class="secondary-btn">Upload CSV for Batch Testing</label>
+                    <input type="file" id="csv-upload" accept=".csv" class="hidden">
+                </div>
+
+                <div id="batch-results" class="batch-results hidden">
+                    <h3>Batch Test Results</h3>
+                    <div class="metrics-grid">
+                        <div class="metric">
+                            <span class="label">Total Processed</span>
+                            <span class="value" id="batch-total">0</span>
+                        </div>
+                        <div class="metric">
+                            <span class="label">Fraud Flagged</span>
+                            <span class="value" id="batch-fraud">0</span>
+                        </div>
+                        <div class="metric">
+                            <span class="label">Fraud %</span>
+                            <span class="value" id="batch-percent">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="features-form" class="features-form">
+                    <h3>Manual Feature Inspection</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="feat-Time">Time</label>
+                            <input type="number" id="feat-Time" name="Time" step="any" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="feat-Amount">Amount ($)</label>
+                            <input type="number" id="feat-Amount" name="Amount" step="any" required>
+                        </div>
+                    </div>
+
+                    <div class="features-grid">
+                        <!-- V1-V28 -->
+                        <div id="v-features-container"></div>
+                    </div>
+
+                    <div class="debugger-footer">
+                        <button type="submit" class="primary-btn">Run Prediction on Features</button>
+                    </div>
+                </form>
+
+                <div id="debugger-result" class="debugger-result hidden">
+                    <div class="status-badge" id="debug-badge">Checking...</div>
+                    <p id="debug-meta">Prob: <span id="debug-prob">0%</span> | Time: <span id="debug-time">0ms</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SecurePay Demo. Powered by Scikit-Learn & FastAPI.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
