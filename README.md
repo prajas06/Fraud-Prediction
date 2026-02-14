@@ -2,7 +2,7 @@
 
 A comprehensive Fraud Detection System demonstrating end-to-end Machine Learning capabilities: form Real-time Scoring to Model Evaluation and Business Impact Analysis.
 
-## 🚀 Features
+## Features
 
 ### 1. Real-Time Risk Scoring (Payment Simulation)
 - Simulate a payment gateway experience.
@@ -18,7 +18,7 @@ A comprehensive Fraud Detection System demonstrating end-to-end Machine Learning
 - **Batch Testing**: Upload a CSV to process thousands of transactions instantly.
 - **Random Sampling**: Test the model against real formatted data from the dataset.
 
-## 📊 Data Science Context
+## Data Science Context
 
 ### The Challenge
 - **Imbalanced Dataset**: The dataset contains only 0.17% fraud cases. Traditional accuracy is misleading (a dummy model predicting "Legitimate" for everything would be 99.83% accurate).
@@ -29,7 +29,7 @@ A comprehensive Fraud Detection System demonstrating end-to-end Machine Learning
 - **Preprocessing**: StandardScaler for feature scaling.
 - **Evaluation**: The dashboard visualizes the "Business Cost" of different thresholds.
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
 ### Prerequisites
 - **Python 3.9+**
@@ -65,9 +65,9 @@ uvicorn backend.main:app --reload
 
 ### Step 5: Access the Dashboard
 Open your browser and visit:
-👉 **[http://localhost:8000](http://localhost:8000)**
+ **[http://localhost:8000](http://localhost:8000)**
 
-## 📂 Project Structure
+## Project Structure
 - `backend/`: FastAPI app, ML training logic, and data handling.
 - `frontend/`: Dashboard UI (HTML/CSS/JS/Chart.js).
 - `models/`: Serialized model and pre-computed analytics.
